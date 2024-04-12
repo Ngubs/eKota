@@ -1,4 +1,4 @@
-namespace eKotaApp.Models
+namespace eKota.Models.Models
 {
     public class ErrorViewModel
     {

@@ -1,4 +1,4 @@
-using eKotaApp.Models;
+using eKota.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
