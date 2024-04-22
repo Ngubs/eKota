@@ -10,6 +10,6 @@ namespace eKota.DataAccess.Repository.CategoryRepository
     public interface ICategoryRepository : IRepository<Category>
     {
         public void Update(Category item);
-        public void Save();
+        //public void Save();
     }
 }

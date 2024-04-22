@@ -7,14 +7,14 @@ namespace eKotaApp.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _categoryRepo;
-        public CategoryController(ICategoryRepository categoryRepository)
+        private readonly IDatabaseTransaction _dbTransaction;
+        public CategoryController(IDatabaseTransaction dbTransaction)
         {
-            _categoryRepo = categoryRepository;
+            _dbTransaction = dbTransaction;
         }
         public IActionResult Index()
         {
-            IEnumerable<Category> categoryList = _categoryRepo.GetAll();
+            IEnumerable<Category> categoryList = _dbTransaction.CategoryRepository.GetAll();
             return View(categoryList);
         }
         [HttpGet]
@@ -27,8 +27,8 @@ namespace eKotaApp.Controllers
         {
             if(ModelState.IsValid)
             {
-                _categoryRepo.Add(category);
-                _categoryRepo.Save();
+                _dbTransaction.CategoryRepository.Add(category);
+                _dbTransaction.Commit();
                 TempData["notify"] = "New Category Added Successfully";
                 return RedirectToAction("Index");
             }
@@ -41,7 +41,7 @@ namespace eKotaApp.Controllers
             {
                 return NotFound();
             }
-            Category? catFromDb = _categoryRepo.Get(c => c.Id == id);
+            Category? catFromDb = _dbTransaction.CategoryRepository.Get(c => c.Id == id);
             if(catFromDb == null)
             {
                 return NotFound();
@@ -53,8 +53,8 @@ namespace eKotaApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepo.Update(category);
-                _categoryRepo.Save();
+                _dbTransaction.CategoryRepository.Update(category);
+                _dbTransaction.Commit();
                 TempData["notify"] = "Category Edited Successfully";
                 return RedirectToAction("Index");
             }
@@ -67,7 +67,7 @@ namespace eKotaApp.Controllers
             {
                 return NotFound();
             }
-            Category? catFromDb = _categoryRepo.Get(c => c.Id == id);
+            Category? catFromDb = _dbTransaction.CategoryRepository.Get(c => c.Id == id);
             if (catFromDb == null)
             {
                 return NotFound();
@@ -77,13 +77,13 @@ namespace eKotaApp.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category? category = _categoryRepo.Get(c => c.Id == id);
+            Category? category = _dbTransaction.CategoryRepository.Get(c => c.Id == id);
             if (category == null)
             {
                 return NotFound();
             }
-            _categoryRepo.Remove(category);
-            _categoryRepo.Save();
+            _dbTransaction.CategoryRepository.Remove(category);
+            _dbTransaction.Commit();
             TempData["notify"] = "Category Deleted Successfully";
             return RedirectToAction("Index");
             
